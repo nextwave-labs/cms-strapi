@@ -14,14 +14,19 @@ export default factories.createCoreController(
         where: { slug },
 
         // Line to populate the relationships
-        populate: { image: true, tags: true, author: { populate: { image: true }}, meta_datum: true },
+        populate: {
+          image: true,
+          tags: true,
+          author: { populate: { image: true } },
+          meta_datum: true,
+        },
       });
 
-      entity.author.imageUrl = entity.author.image?.url
-      delete entity.author.image
+      entity.author.imageUrl = entity.author.image?.url;
+      delete entity.author.image;
 
-      entity.imageUrl = entity.image?.url
-      delete entity.image
+      entity.imageUrl = entity.image?.url;
+      delete entity.image;
 
       const sanitizedEntity = await this.sanitizeOutput(entity, ctx);
 
@@ -47,9 +52,9 @@ export default factories.createCoreController(
         },
         populate: { tags: true, author: true, image: true },
       });
-      for(const blog of entity){
-        blog.imageUrl = blog.image?.url
-        delete blog.image
+      for (const blog of entity) {
+        blog.imageUrl = blog.image?.url;
+        delete blog.image;
       }
 
       const sanitizedEntity = await this.sanitizeOutput(entity, ctx);
@@ -57,13 +62,23 @@ export default factories.createCoreController(
       return this.transformResponse(sanitizedEntity);
     },
     async find(ctx) {
-      const entity = await strapi.db.query('api::blog.blog').findMany({
+      const entity = await strapi.db.query("api::blog.blog").findMany({
         // Line to populate the relationships
-        populate:  { image: true, tags: true, author: { populate: { image: true }}, meta_datum: true },
+        populate: {
+          image: true,
+          tags: true,
+          author: { populate: { image: true } },
+          meta_datum: true,
+        },
+        where: {
+          publishedAt: {
+            $notNull: true,
+          },
+        },
       });
-      for(const blog of entity){
-        blog.imageUrl = blog.image?.url
-        delete blog.image
+      for (const blog of entity) {
+        blog.imageUrl = blog.image?.url;
+        delete blog.image;
       }
       const sanitizedEntity = await this.sanitizeOutput(entity, ctx);
 
